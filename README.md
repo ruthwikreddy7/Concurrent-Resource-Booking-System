@@ -37,3 +37,43 @@ Although these applications belong to different domains, the underlying engineer
                         |
                         v
                 Successful Booking
+```
+
+## Run
+
+The app expects PostgreSQL on `localhost:5432` with database `concurrentbooking`
+and credentials `postgres/postgres`. It uses Druid as the datasource implementation.
+
+```bash
+createdb -h localhost -U postgres concurrentbooking
+mvn clean install
+mvn spring-boot:run
+```
+
+Swagger UI:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+OpenAPI JSON:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
+## Booking Idempotency
+
+`POST /api/v1/bookings` requires `X-Idempotency-Key`.
+
+The request body contains only the booking data:
+
+```json
+{
+  "userId": "user-id",
+  "showId": "show-id",
+  "showSeatIds": ["show-seat-id"]
+}
+```
+
+Retrying the same request with the same `X-Idempotency-Key` returns the first stored create response. Reusing the same key with a different request returns a conflict.
