@@ -45,7 +45,7 @@ The app expects PostgreSQL on `localhost:5432` with database `concurrentbooking`
 and credentials `postgres/postgres`. It uses Druid as the datasource implementation.
 
 ```bash
-createdb -h localhost -U postgres concurrentbooking
+docker compose up -d
 mvn clean install
 mvn spring-boot:run
 ```
@@ -77,3 +77,25 @@ The request body contains only the booking data:
 ```
 
 Retrying the same request with the same `X-Idempotency-Key` returns the first stored create response. Reusing the same key with a different request returns a conflict.
+
+## Database Migrations
+
+Flyway owns schema evolution. Hibernate validates mappings after Flyway runs.
+
+```text
+src/main/resources/db/migration/V1__create_initial_schema.sql
+```
+
+The baseline migration contains the native schema. Future optimization phases should add new migrations instead of relying on Hibernate schema updates.
+
+## Load Testing
+
+k6 scenarios live under `k6/scenarios`:
+
+```bash
+k6 run k6/scenarios/smoke.js
+k6 run k6/scenarios/booking-baseline.js
+k6 run -e HOT_SEAT_VUS=100 k6/scenarios/hot-seat.js
+```
+
+The hot-seat scenario intentionally sends many clients to one show seat so the phase 0 concurrency behavior is measurable before any optimization work.
