@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: concurrent-booking-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: booking_user
+      POSTGRES_PASSWORD: dev_password_123
+    volumes:
+      - seatguard_pg18:/var/lib/postgresql
+
+volumes:
+  seatguard_pg18:
