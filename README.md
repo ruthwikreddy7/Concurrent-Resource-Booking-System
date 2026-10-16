@@ -7,7 +7,7 @@ Concurrent-Resource-Booking-System is a seat-booking project for places with lim
 Imagine hundreds of people trying to book the same seat at the same time. SeatGuard is designed to make sure **only one person gets that seat**. Everyone else receives a clear message that it is no longer available.
 
 
-## Application Screenshot
+## Schema diagram
 
 ![Concurrent Resource Booking System Dashboard](assets/concurrentbookingschema.png)
 
